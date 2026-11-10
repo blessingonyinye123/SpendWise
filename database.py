@@ -4,7 +4,7 @@ def init_db():
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
     
-    # Drop old tables so they recreate with username isolation
+    # Safely recreate tables with username column
     cursor.execute("DROP TABLE IF EXISTS expenses")
     cursor.execute("DROP TABLE IF EXISTS budgets")
     cursor.execute("DROP TABLE IF EXISTS savings_goals")
@@ -51,7 +51,7 @@ def init_db():
     
     conn.commit()
     conn.close()
-    
+
 def add_expense(username, title, amount, category, date):
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
@@ -107,7 +107,6 @@ def get_total_spending(username):
 def set_budget(username, category, limit_amount):
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
-    # Check if budget already exists for this user and category
     cursor.execute("SELECT id FROM budgets WHERE username = ? AND category = ?", (username, category.title()))
     row = cursor.fetchone()
     if row:
@@ -184,7 +183,6 @@ def get_monthly_summary(username):
     conn.close()
     return rows
 
-# Blog functions remain global for the admin
 def add_blog_post(title, content, image_url, date):
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
