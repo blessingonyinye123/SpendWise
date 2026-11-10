@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%234f46e5%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M3 17l6-6 4 4 8-8%22/><polyline points=%2214 7 21 7 21 14%22/></svg>">
+    <title>{% block title %}SpendWise{% endblock %}</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --danger: #ef4444;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes subtlePulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        sidebar {
+            width: 270px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 28px 20px;
+            position: fixed;
+            height: 100vh;
+            box-sizing: border-box;
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .nav-brand {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-brand svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--primary);
+            fill: none;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-brand:hover svg {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.93rem;
+            padding: 11px 14px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: #eef2ff;
+            transform: translateX(4px);
+        }
+
+        .sidebar-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .currency-form select {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--primary);
+            outline: none;
+            width: 100%;
+        }
+
+        .admin-link {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            text-decoration: none;
+            text-align: center;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .admin-link:hover {
+            color: var(--primary);
+        }
+
+        .main-content {
+            margin-left: 270px;
+            flex: 1;
+            padding: 40px;
+            box-sizing: border-box;
+            max-width: 1200px;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+            padding: 30px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.06);
+        }
+
+        h2, h3 {
+            margin-top: 0;
+            color: var(--text);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        input, select, textarea {
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: inherit;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+            background-color: #f8fafc;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+        }
+
+        .badge {
+            background-color: #eef2ff;
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.83rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 20px;
+            }
+            .sidebar-top { gap: 18px; }
+            .nav-links { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+            .nav-links a { padding: 8px 12px; font-size: 0.85rem; }
+            .main-content { margin-left: 0; padding: 20px 16px; max-width: 100%; }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <sidebar>
+        <div class="sidebar-top">
+            <a href="/" class="nav-brand">
+                <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 17l6-6 4 4 8-8"/>
+                    <polyline points="14 7 21 7 21 14"/>
+                </svg>
+                SpendWise
+            </a>
+            <div class="nav-links">
+                <a href="/">🏠 Home</a>
+                <a href="/dashboard">📊 Dashboard</a>
+                <a href="/expenses">💸 Expenses</a>
+                <a href="/budgets">🎯 Budgets</a>
+                <a href="/savings">💰 Savings Goals</a>
+                <a href="/reports">📈 Reports</a>
+                <a href="/blog">📖 Financial Guide & Blog</a>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <form action="/set_currency" method="POST" class="currency-form">
+                <select name="currency" onchange="this.form.submit()">
+                    {% for code, name in currencies.items() %}
+                        <option value="{{ code }}" {% if currency == code %}selected{% endif %}>{{ code }} - {{ name.split(' ')[0] }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            <form action="/set_name" method="POST" style="display: flex; gap: 6px;">
+                <input type="text" name="user_name" value="{{ session.get('user_name', 'Ikeli') }}" placeholder="Your Name" style="padding: 7px 10px; font-size: 0.85rem; border-radius: 8px;">
+                <button type="submit" style="padding: 7px 12px; font-size: 0.85rem; border-radius: 8px;">Set</button>
+            </form>
+
+            <a href="/admin/blog" class="admin-link">🔒 Admin Article Portal</a>
+        </div>
+    </sidebar>
+
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let dateInput = document.querySelector('input[type="date"]');
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+        });
+
+        function confirmDelete(event, itemName) {
+            if (!confirm(`Are you sure you want to permanently delete "${itemName}"?`)) {
+                event.preventDefault();
+            }
+        }
+    </script>
+</body>
+</html>

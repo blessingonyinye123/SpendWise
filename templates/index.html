@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - SpendWise{% endblock %}
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Welcome Banner with Daily Wisdom -->
+    <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; padding: 35px; border: none; overflow: hidden; position: relative;">
+        <h1 style="margin: 0 0 8px 0; font-size: 2rem; color: white; font-weight: 800;">Hello, {{ session.get('user_name', 'Ikeli') }}! 👋</h1>
+        <p style="margin: 0 0 20px 0; opacity: 0.9; font-size: 1.05rem;">Here is your comprehensive financial snapshot and active budget health overview for this season.</p>
+        
+        <!-- Daily Wisdom Box -->
+        <div style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, 0.25); padding: 14px 18px; border-radius: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 22px;">
+            <span style="font-size: 1.5rem;">💡</span>
+            <div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85; font-weight: 700;">Daily Financial Wisdom</div>
+                <div style="font-size: 0.98rem; font-weight: 500; margin-top: 2px;">{{ daily_tip }}</div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px 22px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); flex: 1; min-width: 180px;">
+                <div style="font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; font-weight: 600;">Total Spending</div>
+                <div style="font-size: 1.6rem; font-weight: bold; margin-top: 2px;">{{ currency }}{{ "%.2f"|format(total) }}</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); padding: 12px 22px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); flex: 1; min-width: 180px;">
+                <div style="font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; font-weight: 600;">Active Budgets Tracked</div>
+                <div style="font-size: 1.6rem; font-weight: bold; margin-top: 2px;">{{ budgets|length }} Categories</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Budget Health Grid -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h3 style="margin: 0;">🎯 Active Budget Health & Spending Progress</h3>
+            <a href="/budgets" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Manage Budgets →</a>
+        </div>
+        
+        {% if budgets %}
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for b in budgets %}
+                <div style="background: #f8fafc; border: 1px solid var(--border); padding: 20px; border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <strong style="font-size: 1.1rem; color: var(--text);">{{ b.category }}</strong>
+                        <span style="color: var(--text-light); font-size: 0.93rem; font-weight: 500;">Spent: {{ currency }}{{ "%.2f"|format(b.spent) }} / {{ currency }}{{ "%.2f"|format(b.limit) }}</span>
+                    </div>
+                    <div style="background: #e2e8f0; border-radius: 8px; height: 12px; overflow: hidden;">
+                        <div style="background: {% if b.spent > b.limit %}#ef4444{% else %}#4f46e5{% endif %}; width: {{ [b.percentage, 100]|min }}%; height: 100%; border-radius: 8px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.88rem; flex-wrap: wrap; gap: 6px;">
+                        <span style="color: var(--text-light); font-weight: 600;">{{ b.percentage }}% of budget used</span>
+                        <span style="color: {% if b.remaining < 0 %}#ef4444{% else %}#10b981{% endif %}; font-weight: 700;">
+                            {% if b.remaining < 0 %}
+                                ⚠️ Over budget by {{ currency }}{{ "%.2f"|format(b.remaining|abs) }}
+                            {% else %}
+                                ✓ {{ currency }}{{ "%.2f"|format(b.remaining) }} remaining
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                <p style="margin-bottom: 15px;">No category budgets configured yet.</p>
+                <a href="/budgets"><button>Set Up Your First Budget</button></a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Transactions Section -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <h3 style="margin: 0;">💸 Recent Transactions Preview</h3>
+            <a href="/expenses" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View All Ledger →</a>
+        </div>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if expenses %}
+                        {% for expense in expenses %}
+                        <tr>
+                            <td><strong>{{ expense[1] }}</strong></td>
+                            <td style="font-weight: 600; color: var(--primary);">{{ currency }}{{ "%.2f"|format(expense[2]) }}</td>
+                            <td><span class="badge">{{ expense[3] }}</span></td>
+                            <td style="color: var(--text-light);">{{ expense[4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 30px;">No recent expenses recorded in the ledger.</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

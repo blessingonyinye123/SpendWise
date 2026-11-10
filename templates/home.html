@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Welcome to SpendWise - Home{% endblock %}
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 32px;">
+
+    <!-- Hero Section -->
+    <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%); color: white; padding: 60px 40px; border: none; text-align: center;">
+        
+        <div style="margin: 0 auto 15px auto; width: 56px; height: 56px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17l6-6 4 4 8-8"/>
+                <polyline points="14 7 21 7 21 14"/>
+            </svg>
+        </div>
+
+        <h1 style="margin: 0 0 15px 0; font-size: 2.8rem; color: white; font-weight: 800; letter-spacing: -1px;">Master Your Wealth with SpendWise</h1>
+        <p style="margin: 0 auto 30px auto; opacity: 0.95; font-size: 1.15rem; max-width: 680px; line-height: 1.6;">
+            Your ultimate multi-currency financial operating system. Seamlessly log transactions, set intelligent category limits, protect long-term multi-year archives, and master personal finance.
+        </p>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <a href="/dashboard" style="text-decoration: none;">
+                <button style="background: white; color: var(--primary); padding: 14px 32px; font-size: 1.05rem; border-radius: 12px; font-weight: bold; box-shadow: 0 4px 14px rgba(0,0,0,0.1);">Launch Dashboard →</button>
+            </a>
+            <a href="/blog" style="text-decoration: none;">
+                <button style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 14px 32px; font-size: 1.05rem; border-radius: 12px; font-weight: bold; backdrop-filter: blur(5px); box-shadow: none;">Explore Financial Guide</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- 6 Feature Cards Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 2.2rem; background: #eef2ff; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px;">🌍</div>
+            <h3 style="color: var(--primary); margin: 0; font-size: 1.2rem;">Multi-Currency Engine</h3>
+            <p style="color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                Instantly switch across global currencies including Naira (₦), US Dollars ($), Euros (€), and British Pounds (£) with live session formatting across all ledgers.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 2.2rem; background: #eef2ff; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px;">🗂️</div>
+            <h3 style="color: var(--primary); margin: 0; font-size: 1.2rem;">Permanent Historical Vault</h3>
+            <p style="color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                Never lose a single entry. Your relational database permanently preserves transaction logs month-by-month and year-by-year for complete historical clarity.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 2.2rem; background: #eef2ff; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px;">🎯</div>
+            <h3 style="color: var(--primary); margin: 0; font-size: 1.2rem;">Smart Category Budgets</h3>
+            <p style="color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                Set dynamic spending caps with real-time percentage progress indicators, color-coded over-budget alerts, and independent budget management.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 2.2rem; background: #eef2ff; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px;">💡</div>
+            <h3 style="color: var(--primary); margin: 0; font-size: 1.2rem;">365-Day Financial Wisdom</h3>
+            <p style="color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                Start every morning with curated financial advice that automatically rotates daily to build lifelong money mastery and disciplined habits.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 2.2rem; background: #eef2ff; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px;">💰</div>
+            <h3 style="color: var(--primary); margin: 0; font-size: 1.2rem;">Goal Tracking & Savings Vault</h3>
+            <p style="color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                Define major financial milestones, log your accumulation progress over time, and monitor target deadlines inside a dedicated savings dashboard.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 2.2rem; background: #eef2ff; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px;">📈</div>
+            <h3 style="color: var(--primary); margin: 0; font-size: 1.2rem;">Archival Intelligence & Blog</h3>
+            <p style="color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                Analyze long-term daily and monthly trend reports alongside an interactive financial publishing blog complete with admin article management.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
