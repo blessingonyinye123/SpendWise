@@ -4,6 +4,11 @@ def init_db():
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
     
+    # Drop old tables so they recreate with username isolation
+    cursor.execute("DROP TABLE IF EXISTS expenses")
+    cursor.execute("DROP TABLE IF EXISTS budgets")
+    cursor.execute("DROP TABLE IF EXISTS savings_goals")
+    
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS expenses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +51,7 @@ def init_db():
     
     conn.commit()
     conn.close()
-
+    
 def add_expense(username, title, amount, category, date):
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
