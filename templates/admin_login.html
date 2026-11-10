@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Admin Login - SpendWise{% endblock %}
+{% block content %}
+<div style="max-width: 400px; margin: 40px auto;" class="card">
+    <h2 style="color: var(--primary); margin-bottom: 20px; text-align: center;">🔐 Owner Login</h2>
+    
+    {% if error %}
+    <div style="background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Admin Passcode:</label>
+            <input type="password" name="passcode" required style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;">
+        </div>
+        <button type="submit" style="background: var(--primary); color: white; padding: 10px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            Login to Admin
+        </button>
+    </form>
+</div>
+{% endblock %}

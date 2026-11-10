@@ -304,7 +304,7 @@ def before_request():
     if 'currency' not in session:
         session['currency'] = '₦'
     if 'user_name' not in session:
-        session['user_name'] = 'Ikeli'
+        session['user_name'] = 'Friend'  # Default greeting for regular visitors
 
 @app.route("/set_currency", methods=["POST"])
 def set_currency():
@@ -313,12 +313,7 @@ def set_currency():
         session['currency'] = selected_currency
     return redirect(request.referrer or url_for('home'))
 
-@app.route("/set_name", methods=["POST"])
-def set_name():
-    name = request.form.get("user_name")
-    if name:
-        session['user_name'] = name.title()
-    return redirect(request.referrer or url_for('home'))
+# NOTE: The /set_name route was removed here so users cannot change names manually!
 
 @app.route("/")
 def home():
@@ -388,13 +383,30 @@ def reports_page():
     return render_template("reports.html", daily=daily_summary, monthly=monthly_summary, 
                            currency=session.get('currency', '₦'), currencies=CURRENCIES)
 
+# --- SECURE BLOG & ADMIN ROUTES ---
+
 @app.route("/blog")
 def blog_page():
     posts = database.get_blog_posts()
     return render_template("blog.html", posts=posts, currency=session.get('currency', '₦'), currencies=CURRENCIES)
 
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        passcode = request.form.get("passcode")
+        if passcode == "mysecretpassword":  # You can change this password to anything you want!
+            session['is_admin'] = True
+            session['user_name'] = 'Ikeli'  # Automatically sets your owner name when you log in
+            return redirect(url_for("admin_blog"))
+        else:
+            return render_template("admin_login.html", error="Incorrect Passcode", currency=session.get('currency', '₦'), currencies=CURRENCIES)
+    return render_template("admin_login.html", currency=session.get('currency', '₦'), currencies=CURRENCIES)
+
 @app.route("/admin/blog", methods=["GET", "POST"])
 def admin_blog():
+    if not session.get('is_admin'):
+        return redirect(url_for("admin_login"))
+        
     if request.method == "POST":
         title = request.form.get("title")
         content = request.form.get("content")
@@ -402,13 +414,18 @@ def admin_blog():
         date = request.form.get("date")
         database.add_blog_post(title, content, image_url, date)
         return redirect(url_for("blog_page"))
+        
     posts = database.get_blog_posts()
     return render_template("admin_blog.html", posts=posts, currency=session.get('currency', '₦'), currencies=CURRENCIES)
 
 @app.route("/admin/blog/delete/<int:post_id>")
 def delete_blog(post_id):
+    if not session.get('is_admin'):
+        return redirect(url_for("admin_login"))
     database.delete_blog_post(post_id)
     return redirect(url_for("admin_blog"))
+
+# --- ALL OTHER APP ROUTES REMAIN THE SAME ---
 
 @app.route("/add", methods=["POST"])
 def add():
@@ -460,6 +477,15 @@ def execute_clear():
     if choice == "yes":
         database.clear_budgets()
     return redirect(url_for("expenses_page"))
+
+@app.route("/login", methods=["GET", "POST"])
+def user_login():
+    if request.method == "POST":
+        name = request.form.get("user_name")
+        if name:
+            session['user_name'] = name.title()
+        return redirect(url_for('home'))
+    return render_template("user_login.html", currency=session.get('currency', '₦'), currencies=CURRENCIES)
 
 if __name__ == "__main__":
     app.run(debug=True)

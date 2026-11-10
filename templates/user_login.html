@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Welcome - SpendWise{% endblock %}
+{% block content %}
+<div style="max-width: 400px; margin: 40px auto;" class="card">
+    <h2 style="color: var(--primary); margin-bottom: 10px; text-align: center;">Welcome to SpendWise</h2>
+    <p style="color: var(--text-light); text-align: center; margin-bottom: 20px; font-size: 0.9rem;">Please enter your name to personalize your experience.</p>
+
+    <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        <div>
+            <label style="display: block; margin-bottom: 5px; font-weight: 500;">Your Name:</label>
+            <input type="text" name="user_name" required placeholder="e.g. Sarah" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px;">
+        </div>
+        <button type="submit" style="background: var(--primary); color: white; padding: 10px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            Continue to SpendWise
+        </button>
+    </form>
+</div>
+{% endblock %}
