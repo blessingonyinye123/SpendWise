@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Expenses - SpendWise{% endblock %}
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 28px;">
+
+    <!-- Hero Banner -->
+    <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; padding: 35px; border: none; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <h1 style="margin: 0 0 8px 0; font-size: 2rem; color: white; font-weight: 800;">Expenses 💸</h1>
+            <p style="margin: 0; opacity: 0.9; font-size: 1.05rem;">Log new items and manage your permanent multi-year financial archive.</p>
+            <div style="margin-top: 20px; font-size: 1.35rem; font-weight: bold; background: rgba(255,255,255,0.15); display: inline-block; padding: 10px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);">
+                Total Accumulated: {{ currency }}{{ "%.2f"|format(total) }}
+            </div>
+        </div>
+        <a href="/clear_prompt" style="text-decoration: none;">
+            <button style="background-color: var(--danger); color: white; padding: 13px 24px; font-weight: bold; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);">Clear All Expenses</button>
+        </a>
+    </div>
+
+    <!-- Add Expense Form -->
+    <div class="card">
+        <h3>Record New Expense Item</h3>
+        <p style="color: var(--text-light); font-size: 0.92rem; margin-top: -5px; margin-bottom: 20px;">Fill out the details below to add a new transaction to your permanent ledger.</p>
+        <form action="/add" method="POST" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) 130px; gap: 18px; align-items: end;">
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 6px;">TITLE / DESCRIPTION</label>
+                <input type="text" name="title" placeholder="e.g., Groceries & Produce" required>
+            </div>
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 6px;">AMOUNT ({{ currency }})</label>
+                <input type="number" step="0.01" name="amount" placeholder="0.00" required>
+            </div>
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 6px;">CATEGORY</label>
+                <input type="text" name="category" placeholder="e.g., Food" required>
+            </div>
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 6px;">DATE</label>
+                <input type="date" name="date" required>
+            </div>
+            <button type="submit" style="height: 46px; font-weight: 700;">Add Expense</button>
+        </form>
+    </div>
+
+    <!-- Live Search & Filter Bar -->
+    <div class="card" style="padding: 20px; margin-bottom: 0;">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <input type="text" id="expenseSearch" placeholder="🔍 Instant search by title..." onkeyup="filterExpenses()" style="flex: 1; min-width: 220px;">
+            <input type="text" id="categorySearch" placeholder="Filter by category..." onkeyup="filterExpenses()" style="width: 220px;">
+        </div>
+    </div>
+
+    <!-- Expenses Table -->
+    <div class="card" style="margin-top: 0;">
+        <h3>Complete Recorded Expenses</h3>
+        <p style="color: var(--text-light); font-size: 0.92rem; margin-top: -5px; margin-bottom: 15px;">Sorted chronologically by date for full historical transparency.</p>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Title</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if expenses %}
+                        {% for expense in expenses %}
+                        <tr>
+                            <td style="color: var(--text-light);">{{ loop.index }}</td>
+                            <td><strong>{{ expense[1] }}</strong></td>
+                            <td style="font-weight: 700; color: var(--primary);">{{ currency }}{{ "%.2f"|format(expense[2]) }}</td>
+                            <td><span class="badge">{{ expense[3] }}</span></td>
+                            <td style="color: var(--text-light);">{{ expense[4] }}</td>
+                            <td>
+                                <a href="/delete/{{ expense[0] }}" onclick="confirmDelete(event, '{{ expense[1] }}')" style="text-decoration: none;">
+                                    <button style="background-color: var(--danger); padding: 7px 14px; font-size: 0.82rem; box-shadow: none;">Delete</button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="6" style="text-align: center; color: var(--text-light); padding: 40px;">No expenses recorded yet. Your ledger is clean and ready!</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function filterExpenses() {
+    let searchInput = document.getElementById('expenseSearch').value.toLowerCase();
+    let catInput = document.getElementById('categorySearch').value.toLowerCase();
+    let rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        let titleCell = row.cells[1];
+        let catCell = row.cells[3];
+        
+        if (titleCell && catCell) {
+            let title = titleCell.innerText.toLowerCase();
+            let category = catCell.innerText.toLowerCase();
+            
+            let matchesSearch = title.includes(searchInput);
+            let matchesCategory = category.includes(catInput);
+
+            if (matchesSearch && matchesCategory) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

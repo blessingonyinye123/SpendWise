@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Monthly Budgets - SpendWise{% endblock %}
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 28px;">
+
+    <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; padding: 35px; border: none;">
+        <h1 style="margin: 0 0 8px 0; font-size: 2rem; color: white; font-weight: 800;">Monthly Budget Limits 🎯</h1>
+        <p style="margin: 0; opacity: 0.9; font-size: 1.05rem;">Establish strict category spending caps and track your real-time consumption progress.</p>
+    </div>
+
+    <!-- Set Budget Form -->
+    <div class="card">
+        <h3>Configure Category Budget</h3>
+        <p style="color: var(--text-light); font-size: 0.92rem; margin-top: -5px; margin-bottom: 20px;">Set or update your monthly spending ceiling for any category.</p>
+        <form action="/set_budget" method="POST" style="display: grid; grid-template-columns: 1fr 1fr 140px; gap: 18px; align-items: end;">
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 6px;">CATEGORY NAME</label>
+                <input type="text" name="category" placeholder="e.g., Food, Transport, Utilities" required>
+            </div>
+            <div>
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); display: block; margin-bottom: 6px;">MONTHLY LIMIT ({{ currency }})</label>
+                <input type="number" step="0.01" name="limit_amount" placeholder="50000.00" required>
+            </div>
+            <button type="submit" style="height: 46px; font-weight: 700;">Save Budget</button>
+        </form>
+    </div>
+
+    <!-- Active Budgets List -->
+    <div class="card">
+        <h3>Active Budgets & Consumption Progress</h3>
+        <p style="color: var(--text-light); font-size: 0.92rem; margin-top: -5px; margin-bottom: 20px;">Monitor your remaining balance and remove limits independently anytime.</p>
+        
+        {% if budgets %}
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                {% for b in budgets %}
+                <div style="background: #f8fafc; border: 1px solid var(--border); padding: 20px; border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="font-size: 1.1rem; color: var(--text);">{{ b.category }}</strong>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <span style="color: var(--text-light); font-size: 0.93rem; font-weight: 500;">Spent: {{ currency }}{{ "%.2f"|format(b.spent) }} / {{ currency }}{{ "%.2f"|format(b.limit) }}</span>
+                            <a href="/delete_budget/{{ b.category }}" onclick="return confirm('Remove budget limit for {{ b.category }}?');" style="text-decoration: none;">
+                                <button style="background-color: var(--danger); padding: 6px 14px; font-size: 0.82rem; box-shadow: none;">Remove</button>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="background: #e2e8f0; border-radius: 8px; height: 12px; overflow: hidden;">
+                        <div style="background: {% if b.spent > b.limit %}#ef4444{% else %}#4f46e5{% endif %}; width: {{ [b.percentage, 100]|min }}%; height: 100%; border-radius: 8px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.88rem;">
+                        <span style="color: var(--text-light); font-weight: 600;">{{ b.percentage }}% utilized</span>
+                        <span style="color: {% if b.remaining < 0 %}#ef4444{% else %}#10b981{% endif %}; font-weight: 700;">
+                            {% if b.remaining < 0 %}
+                                ⚠️ Over budget by {{ currency }}{{ "%.2f"|format(b.remaining|abs) }}
+                            {% else %}
+                                ✓ {{ currency }}{{ "%.2f"|format(b.remaining) }} remaining
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                <p style="font-style: italic;">No category budgets configured yet. Add one above to start tracking limits!</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
