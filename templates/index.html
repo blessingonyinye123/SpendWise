@@ -98,4 +98,29 @@
                                     <div class="font-semibold text-gray-900">{{ exp[1] }}</div>
                                     <div class="text-xs text-gray-500">{{ exp[4] }}</div>
                                 </div>
-                                <div class="font-bold text-gray-900">{{ currency }}{{ "%.2
+                                <div class="font-bold text-gray-900">{{ currency }}{{ "%.2f"|format(exp[2]) }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-xs text-gray-400 py-6 text-center">No recorded expenses yet.</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Simple Mobile Footer -->
+    <footer class="md:hidden bg-white border-t border-gray-200 py-3 mt-auto">
+        <div class="flex justify-around text-xs font-medium text-gray-600">
+            <a href="/dashboard" class="text-blue-600 font-semibold">Dashboard</a>
+            <a href="/expenses" class="hover:text-blue-600">Expenses</a>
+            <a href="/budgets" class="hover:text-blue-600">Budgets</a>
+            <a href="/savings" class="hover:text-blue-600">Savings</a>
+            <a href="/reports" class="hover:text-blue-600">Reports</a>
+        </div>
+    </footer>
+
+</body>
+</html>
