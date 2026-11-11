@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <!-- Quick Summary Section (Budgets & Goals Preview) -->
+        <!-- Quick Summary Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <!-- Active Budgets Preview -->
@@ -68,3 +68,34 @@
                 {% if budgets %}
                     <div class="space-y-3">
                         {% for b in budgets[:3] %}
+                            <div class="space-y-1 p-2.5 bg-gray-50 rounded-xl border border-gray-100">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span>{{ b.category }}</span>
+                                    <span>{{ b.percentage }}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                                    <div class="{% if b.percentage >= 100 %}bg-red-500{% elif b.percentage >= 85 %}bg-yellow-500{% else %}bg-blue-600{% endif %} h-2 rounded-full" style="width: {{ b.percentage if b.percentage <= 100 else 100 }}%"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-xs text-gray-400 py-6 text-center">No budgets set yet.</p>
+                {% endif %}
+            </div>
+
+            <!-- Recent Expenses Preview -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-gray-800 text-base">Recent Expenses</h3>
+                    <a href="/expenses" class="text-xs text-blue-600 font-semibold hover:underline">View All</a>
+                </div>
+                {% if expenses %}
+                    <div class="space-y-2.5">
+                        {% for exp in expenses %}
+                            <div class="flex justify-between items-center p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-sm">
+                                <div>
+                                    <div class="font-semibold text-gray-900">{{ exp[1] }}</div>
+                                    <div class="text-xs text-gray-500">{{ exp[4] }}</div>
+                                </div>
+                                <div class="font-bold text-gray-900">{{ currency }}{{ "%.2
