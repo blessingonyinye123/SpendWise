@@ -1,68 +1,99 @@
-{% extends "base.html" %}
-{% block title %}Archival Reports - SpendWise{% endblock %}
-{% block content %}
-<div style="display: flex; flex-direction: column; gap: 28px;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendWise - Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
 
-    <div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); color: white; padding: 35px; border: none;">
-        <h1 style="margin: 0 0 8px 0; font-size: 2rem; color: white; font-weight: 800;">Archival Intelligence & Reports 📈</h1>
-        <p style="margin: 0; opacity: 0.9; font-size: 1.05rem;">Review long-term daily and monthly financial breakdowns across past seasons and years.</p>
-    </div>
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600">SpendWise</h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <a href="/dashboard" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                <a href="/expenses" class="text-gray-600 hover:text-blue-600">Expenses</a>
+                <a href="/budgets" class="text-gray-600 hover:text-blue-600">Budgets</a>
+                <a href="/savings" class="text-gray-600 hover:text-blue-600">Savings</a>
+                <a href="/reports" class="text-blue-600 font-semibold">Reports</a>
+                <a href="/blog" class="text-gray-600 hover:text-blue-600">Blog</a>
+            </nav>
+            <form action="/set_currency" method="POST" class="flex items-center space-x-2">
+                <select name="currency" onchange="this.form.submit()" class="text-sm bg-gray-100 border border-gray-300 rounded p-1 cursor-pointer">
+                    {% for symbol, name in currencies.items() %}
+                        <option value="{{ symbol }}" {% if currency == symbol %}selected{% endif %}>{{ symbol }} ({{ name }})</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </header>
 
-    <!-- Daily Historical Archive (On Top) -->
-    <div class="card">
-        <h3>📆 Daily Spending Archive</h3>
-        <p style="color: var(--text-light); font-size: 0.92rem; margin-top: -5px; margin-bottom: 15px;">Day-by-day historical ledger breakdown of all expenditures.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Total Spent</th>
-                    <th>Items Bought</th>
-                </tr>
-            </thead>
-            <tbody>
+    <!-- Main Content Area -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+        
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-2xl font-bold text-gray-900">Financial Reports</h2>
+        </div>
+
+        <!-- Reports Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Daily Summary -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Daily Breakdown</h3>
                 {% if daily %}
-                    {% for row in daily %}
-                    <tr>
-                        <td><strong>{{ row[0] }}</strong></td>
-                        <td style="color: var(--primary); font-weight: bold;">{{ currency }}{{ "%.2f"|format(row[1]) }}</td>
-                        <td><span class="badge">{{ row[2] }} items</span></td>
-                    </tr>
-                    {% endfor %}
+                    <div class="space-y-3">
+                        {% for row in daily %}
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100 text-sm">
+                                <div>
+                                    <div class="font-semibold text-gray-900">📅 {{ row[0] }}</div>
+                                    <div class="text-xs text-gray-500">{{ row[2] }} transaction(s)</div>
+                                </div>
+                                <div class="font-bold text-gray-900">{{ currency }}{{ "%.2f"|format(row[1]) }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                    <tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 30px;">No daily records found yet.</td></tr>
+                    <p class="text-xs text-gray-400 py-8 text-center">No daily summary data available yet.</p>
                 {% endif %}
-            </tbody>
-        </table>
-    </div>
+            </div>
 
-    <!-- Monthly Historical Archive -->
-    <div class="card">
-        <h3>📅 Monthly Spending History</h3>
-        <p style="color: var(--text-light); font-size: 0.92rem; margin-top: -5px; margin-bottom: 15px;">Aggregated multi-year monthly progression and trends.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Month</th>
-                    <th>Total Spent</th>
-                    <th>Transactions Logged</th>
-                </tr>
-            </thead>
-            <tbody>
+            <!-- Monthly Summary -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Monthly Breakdown</h3>
                 {% if monthly %}
-                    {% for row in monthly %}
-                    <tr>
-                        <td><strong>{{ row[0] }}</strong></td>
-                        <td style="color: var(--primary); font-weight: bold;">{{ currency }}{{ "%.2f"|format(row[1]) }}</td>
-                        <td><span class="badge">{{ row[2] }} items</span></td>
-                    </tr>
-                    {% endfor %}
+                    <div class="space-y-3">
+                        {% for row in monthly %}
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100 text-sm">
+                                <div>
+                                    <div class="font-semibold text-gray-900">📊 {{ row[0] }}</div>
+                                    <div class="text-xs text-gray-500">{{ row[2] }} transaction(s)</div>
+                                </div>
+                                <div class="font-bold text-gray-900">{{ currency }}{{ "%.2f"|format(row[1]) }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                    <tr><td colspan="3" style="text-align: center; color: var(--text-light); padding: 30px;">No historical monthly data recorded yet.</td></tr>
+                    <p class="text-xs text-gray-400 py-8 text-center">No monthly summary data available yet.</p>
                 {% endif %}
-            </tbody>
-        </table>
-    </div>
+            </div>
 
-</div>
-{% endblock %}
+        </div>
+
+    </main>
+
+    <!-- Simple Mobile Footer -->
+    <footer class="md:hidden bg-white border-t border-gray-200 py-3 mt-auto">
+        <div class="flex justify-around text-xs font-medium text-gray-600">
+            <a href="/dashboard" class="hover:text-blue-600">Dashboard</a>
+            <a href="/expenses" class="hover:text-blue-600">Expenses</a>
+            <a href="/budgets" class="hover:text-blue-600">Budgets</a>
+            <a href="/savings" class="hover:text-blue-600">Savings</a>
+            <a href="/reports" class="text-blue-600 font-semibold">Reports</a>
+        </div>
+    </footer>
+
+</body>
+</html>

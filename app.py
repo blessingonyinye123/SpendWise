@@ -10,14 +10,14 @@ database.init_db()
 
 # Currency dictionary for the dropdown
 CURRENCIES = {
-    '₦': 'Nigerian Naira (NGN)',
-    '$': 'US Dollar (USD)',
-    '€': 'Euro (EUR)',
-    '£': 'British Pound (GBP)',
-    'C$': 'Canadian Dollar (CAD)',
-    'A$': 'Australian Dollar (AUD)',
-    '¥': 'Japanese Yen (JPY)',
-    '₹': 'Indian Rupee (INR)'
+    '₦': 'Naira',
+    '$': 'Dollar',
+    '€': 'Euro',
+    '£': 'Pound',
+    'C$': 'Canadian Dollar',
+    'A$': 'Australian Dollar',
+    '¥': 'Yen',
+    '₹': 'Rupee'
 }
 
 DAILY_TIPS = [
